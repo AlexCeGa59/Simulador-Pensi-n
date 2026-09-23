@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Cuánta pensión te va a tocar?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef4ef;--card:#fff;--ink:#24352f;--soft:#5a6b64;
+    --teal:#0f6e64;--teal-deep:#0b4f48;--green:#2e9e5b;--amber:#e0982f;--red:#e0553f;--gold:#dca24e;
+    --blue:#2f6fb0;--violet:#7a5cc0;--line:#e2ebe4;--shadow:0 18px 50px rgba(15,78,72,.14);--r:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Nunito',system-ui,-apple-system,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%, #f7fbf7 0%, rgba(247,251,247,0) 60%),var(--bg);
+    color:var(--ink);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px 16px 40px;-webkit-font-smoothing:antialiased;}
+  .wrap{width:100%;max-width:600px;margin-top:auto;margin-bottom:auto}
+  .card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line);overflow:hidden}
+  .screen{display:none;animation:fade .45s ease both}.screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @media (prefers-reduced-motion:reduce){.screen{animation:none}}
+
+  .hero{padding:42px 30px 32px;text-align:center;background:linear-gradient(160deg,#0f6e64,#0b4f48);color:#fff}
+  .hero .ic{width:76px;height:76px;margin:0 auto 16px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:36px}
+  .kicker{font-family:'Fredoka';font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:12px;opacity:.85;margin-bottom:10px}
+  .hero h1{font-family:'Fredoka';font-weight:700;font-size:28px;line-height:1.1;margin-bottom:12px}
+  .hero p{font-size:15.5px;line-height:1.5;opacity:.94;max-width:40ch;margin:0 auto}
+  .welcome-body{padding:26px 30px 32px}
+  .idea{background:#f3f8f4;border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:12px;padding:14px 16px;font-size:14.5px;line-height:1.5;margin-bottom:22px}
+  .idea b{color:var(--teal-deep)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-family:'Fredoka';font-weight:600;font-size:18px;background:var(--gold);color:#4a2f00;border:none;border-radius:15px;padding:16px 26px;width:100%;cursor:pointer;box-shadow:0 8px 20px rgba(220,162,78,.35);transition:transform .12s,box-shadow .12s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(220,162,78,.45)}
+  .btn:active{transform:translateY(0)}
+  .btn:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+  .btn.sec{background:#eef4ef;color:var(--teal-deep);box-shadow:none;border:1px solid var(--line)}
+  .btn.sec:hover{background:#e6efe8}
+
+  /* selector */
+  .calc-head{padding:22px 26px 18px;background:linear-gradient(160deg,#0f6e64,#0b4f48);color:#fff}
+  .calc-head h2{font-family:'Fredoka';font-weight:600;font-size:19px;line-height:1.2}
+  .calc-head .back{background:none;border:none;color:#bfe0d8;font-family:'Fredoka';font-weight:600;font-size:14px;cursor:pointer;padding:0 0 8px;display:inline-flex;align-items:center;gap:6px}
+  .body{padding:24px 26px 28px}
+  .qbig{font-family:'Fredoka';font-weight:600;font-size:20px;line-height:1.25;margin-bottom:8px;text-align:center}
+  .qsub{font-size:14px;color:var(--soft);text-align:center;line-height:1.45;margin-bottom:22px;max-width:42ch;margin-left:auto;margin-right:auto}
+  .law-opt{display:flex;align-items:center;gap:14px;text-align:left;background:#fff;border:2px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;width:100%;margin-bottom:12px;transition:border-color .12s,background .12s}
+  .law-opt:hover{border-color:var(--teal);background:#f6faf7}
+  .law-opt:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+  .law-opt .em{font-size:30px;flex:none}
+  .law-opt .tx b{font-family:'Fredoka';font-weight:600;font-size:16.5px;color:var(--ink);display:block;margin-bottom:2px}
+  .law-opt .tx span{font-size:13.5px;color:var(--soft);line-height:1.4}
+  .help-link{text-align:center;font-size:13px;color:var(--soft);margin-top:8px}
+  .help-link a{color:var(--teal);text-decoration:underline;cursor:pointer}
+  .help-box{display:none;background:#f3f8f4;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.5;color:var(--ink);margin-top:12px}
+  .help-box.show{display:block}
+
+  /* inputs */
+  .field{margin-bottom:18px}
+  .field label{display:block;font-family:'Fredoka';font-weight:600;font-size:14.5px;margin-bottom:7px}
+  .field .hint{font-size:12.5px;color:var(--soft);margin-top:5px;line-height:1.4}
+  .inpwrap{display:flex;align-items:center;gap:6px;background:#f4f7f4;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+  .inpwrap:focus-within{border-color:var(--teal)}
+  .inpwrap .pfx{font-family:'Fredoka';font-weight:700;color:var(--soft);font-size:18px}
+  .inpwrap input{flex:1;border:none;background:transparent;font-family:'Fredoka';font-weight:700;font-size:18px;color:var(--ink);outline:none;width:100%;min-width:0}
+  .inpwrap .sfx{font-size:13px;color:var(--soft);white-space:nowrap}
+  .ages{display:flex;gap:6px;flex-wrap:wrap}
+  .ages button{flex:1;min-width:44px;font-family:'Fredoka';font-weight:600;font-size:15px;padding:11px 4px;border-radius:11px;border:2px solid var(--line);background:#fff;color:var(--soft);cursor:pointer;transition:all .12s}
+  .ages button.on{border-color:var(--teal);background:#eef7f1;color:var(--teal-deep)}
+  .ages button:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+
+  /* result */
+  .result{background:linear-gradient(160deg,#0f6e64,#0b4f48);color:#fff;border-radius:18px;padding:24px 22px;text-align:center;margin:20px 0}
+  .result .rlbl{font-size:13.5px;opacity:.9;margin-bottom:4px}
+  .result .rbig{font-family:'Fredoka';font-weight:700;font-size:40px;line-height:1.05}
+  .result .rbig small{font-size:16px;font-weight:600;opacity:.85}
+  .result .rsub{font-size:14px;opacity:.94;margin-top:8px;line-height:1.4}
+  .result.mini{padding:16px}.result.mini .rbig{font-size:28px}
+
+  .pill-row{display:flex;gap:10px;margin-bottom:16px}
+  .pill{flex:1;background:#f3f6f3;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .pill .pv{font-family:'Fredoka';font-weight:700;font-size:18px;color:var(--teal-deep)}
+  .pill .pl{font-size:12px;color:var(--soft);margin-top:3px;line-height:1.3}
+
+  .compare{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+  .compare h3{font-family:'Fredoka';font-weight:600;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .agebar{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:8px}
+  .agecol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%}
+  .agecol .amt{font-family:'Fredoka';font-weight:700;font-size:11px;color:var(--teal-deep);white-space:nowrap}
+  .agecol .bar{width:100%;background:linear-gradient(180deg,#3a9d7e,#0f6e64);border-radius:6px 6px 0 0;min-height:6px;transition:height .5s}
+  .agecol.best .bar{background:linear-gradient(180deg,#37b06a,#2e9e5b)}
+  .agecol .age{font-size:11px;color:var(--soft);font-family:'Fredoka';font-weight:600}
+
+  .block{border-radius:14px;padding:15px 16px;margin-bottom:13px;font-size:14px;line-height:1.5}
+  .block h4{font-family:'Fredoka';font-weight:600;font-size:15px;margin-bottom:7px;display:flex;align-items:center;gap:8px}
+  .block.m40{background:#eef7f1;border:1px solid #cdebd6}.block.m40 h4{color:var(--green)}
+  .block.vol{background:#f3f0fb;border:1px solid #e2dbf6}.block.vol h4{color:var(--violet)}
+  .block.ppr{background:#eef4fb;border:1px solid #d3e2f4}.block.ppr h4{color:var(--blue)}
+  .block.fpb{background:#f6f7f5;border:1px solid #e2e8e2}.block.fpb h4{color:var(--soft)}
+  .block b{color:inherit}
+
+  .m40row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px;padding-top:10px;border-top:1px dashed #b6e3c6}
+  .m40row .lbl{font-size:13px;color:var(--soft)}
+  .m40row .val{font-family:'Fredoka';font-weight:700;font-size:20px;color:var(--green)}
+
+  .assumptions{background:#f6f7f5;border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:12.5px;color:var(--soft);line-height:1.5;margin-bottom:13px}
+  .assumptions b{color:var(--ink)}
+  .disclaimer{background:#fdf6e9;border:1px solid #f2e3c4;border-radius:12px;padding:13px 15px;font-size:12.5px;color:#8a6a1f;line-height:1.5;margin-bottom:16px}
+  .disclaimer b{color:#6b5010}
+
+  .empty{text-align:center;color:var(--soft);font-size:14.5px;padding:20px 10px;line-height:1.5}
+  .empty .big{font-size:32px;display:block;margin-bottom:8px}
+  .brand{text-align:center;margin-top:16px;font-family:'Fredoka';font-weight:600;font-size:12.5px;color:var(--soft)}
+  .brand span{color:var(--teal)}
+  @media(max-width:430px){.hero{padding:36px 20px 28px}.hero h1{font-size:24px}.welcome-body,.body{padding-left:18px;padding-right:18px}.calc-head{padding-left:18px;padding-right:18px}.result .rbig{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+
+  <!-- WELCOME -->
+  <section id="welcome" class="screen active">
+    <div class="hero">
+      <div class="ic">🧓</div>
+      <div class="kicker">Educación financiera · VIVE</div>
+      <h1>¿Cuánta pensión te va a tocar?</h1>
+      <p>Estima tu pensión del IMSS según tu ley, y descubre qué puedes hacer hoy para mejorarla.</p>
+    </div>
+    <div class="welcome-body">
+      <div class="idea">Tu pensión no es un misterio ni pura suerte: depende de <b>reglas que puedes conocer</b> y de decisiones que están en tus manos. Vamos a estimarla juntos.</div>
+      <button class="btn" onclick="app.toSelector()">Empezar →</button>
+    </div>
+  </section>
+
+  <!-- SELECTOR -->
+  <section id="selector" class="screen">
+    <div class="calc-head"><h2>Primero, ¿qué ley te toca?</h2></div>
+    <div class="body">
+      <div class="qbig">¿Cuándo empezaste a cotizar al IMSS?</div>
+      <div class="qsub">La fecha de tu primer trabajo registrado define cómo se calcula tu pensión. Es el dato más importante.</div>
+      <button class="law-opt" onclick="app.pickLaw('73')">
+        <span class="em">📜</span>
+        <span class="tx"><b>Antes del 1 de julio de 1997</b><span>Ley 73 — tu pensión se calcula con tu salario y tus semanas cotizadas.</span></span>
+      </button>
+      <button class="law-opt" onclick="app.pickLaw('97')">
+        <span class="em">🏦</span>
+        <span class="tx"><b>El 1 de julio de 1997 o después</b><span>Ley 97 — tu pensión sale de lo que ahorres en tu AFORE.</span></span>
+      </button>
+      <div class="help-link"><a onclick="document.getElementById('helpBox').classList.toggle('show')">No sé cuándo empecé a cotizar</a></div>
+      <div id="helpBox" class="help-box">Puedes verlo en tu <b>Constancia de Semanas Cotizadas</b>, que descargas gratis en el portal del IMSS (imss.gob.mx) con tu CURP y NSS. Ahí aparece la fecha de tu primera alta. Si es anterior al 1 de julio de 1997, te toca Ley 73.</div>
+    </div>
+  </section>
+
+  <!-- LEY 73 -->
+  <section id="ley73" class="screen">
+    <div class="calc-head">
+      <button class="back" onclick="app.toSelector()">← Cambiar de ley</button>
+      <h2>📜 Ley 73 · Estima tu pensión</h2>
+    </div>
+    <div class="body">
+      <div class="field">
+        <label>Tu salario promedio mensual</label>
+        <div class="inpwrap"><span class="pfx">$</span><input id="l73-salario" inputmode="numeric" placeholder="12,000" autocomplete="off"><span class="sfx">al mes</span></div>
+        <div class="hint">El promedio de tus últimos 5 años (250 semanas), como lo reporta tu patrón al IMSS.</div>
+      </div>
+      <div class="field">
+        <label>Semanas cotizadas</label>
+        <div class="inpwrap"><input id="l73-semanas" inputmode="numeric" placeholder="1,000" autocomplete="off" style="text-align:left"><span class="sfx">semanas</span></div>
+        <div class="hint">Mínimo 500 para tener derecho. Vienen en tu constancia del IMSS.</div>
+      </div>
+      <div class="field">
+        <label>¿A qué edad te quieres pensionar?</label>
+        <div class="ages" id="l73-ages">
+          <button data-age="60">60</button><button data-age="61">61</button><button data-age="62">62</button>
+          <button data-age="63">63</button><button data-age="64">64</button><button data-age="65" class="on">65</button>
+        </div>
+        <div class="hint">A los 60 recibes el 75%; a los 65, el 100%. Cada año que esperas suma 5 puntos.</div>
+      </div>
+      <div id="l73-result"></div>
+    </div>
+  </section>
+
+  <!-- LEY 97 -->
+  <section id="ley97" class="screen">
+    <div class="calc-head">
+      <button class="back" onclick="app.toSelector()">← Cambiar de ley</button>
+      <h2>🏦 Ley 97 · Estima tu pensión</h2>
+    </div>
+    <div class="body">
+      <div class="field">
+        <label>Tu edad actual</label>
+        <div class="inpwrap"><input id="l97-edad" inputmode="numeric" placeholder="35" autocomplete="off" style="text-align:left"><span class="sfx">años</span></div>
+      </div>
+      <div class="field">
+        <label>¿A qué edad te quieres retirar?</label>
+        <div class="inpwrap"><input id="l97-retiro" inputmode="numeric" placeholder="65" autocomplete="off" style="text-align:left"><span class="sfx">años</span></div>
+      </div>
+      <div class="field">
+        <label>Tu salario mensual</label>
+        <div class="inpwrap"><span class="pfx">$</span><input id="l97-salario" inputmode="numeric" placeholder="15,000" autocomplete="off"><span class="sfx">al mes</span></div>
+      </div>
+      <div class="field">
+        <label>Saldo actual en tu AFORE <span style="font-weight:400;color:var(--soft)">(opcional)</span></label>
+        <div class="inpwrap"><span class="pfx">$</span><input id="l97-saldo" inputmode="numeric" placeholder="0" autocomplete="off"></div>
+        <div class="hint">Lo ves en la app de tu AFORE. Si no lo sabes, déjalo en blanco.</div>
+      </div>
+      <div class="field">
+        <label>¿Cuánto podrías aportar de más al mes?</label>
+        <div class="inpwrap"><span class="pfx">$</span><input id="l97-voluntario" inputmode="numeric" placeholder="500" autocomplete="off"><span class="sfx">extra</span></div>
+        <div class="hint">Aquí está la magia: verás cuánto cambia tu pensión con una aportación voluntaria.</div>
+      </div>
+      <div id="l97-result"></div>
+    </div>
+  </section>
+
+</div></div>
+
+<script>
+// ---- constantes oficiales 2026 ----
+const UMA=117.31, TOPE_DIARIO=25*UMA, PMG=10636.54;
+// Tabla Art. 167 LSS 1973: [límite superior en veces UMA, cuantía básica %, incremento anual %]
+const TABLA=[
+ [1.25,80.00,0.563],[1.50,77.11,0.814],[1.75,58.18,1.178],[2.00,49.23,1.430],
+ [2.25,42.67,1.615],[2.50,37.65,1.756],[2.75,33.68,1.868],[3.00,30.48,1.958],
+ [3.25,27.83,2.033],[3.50,25.60,2.096],[3.75,23.70,2.149],[4.00,22.07,2.195],
+ [4.25,20.65,2.235],[4.50,19.39,2.271],[4.75,18.29,2.302],[5.00,17.30,2.330],
+ [5.25,16.41,2.355],[5.50,15.61,2.377],[5.75,14.88,2.398],[6.00,14.22,2.416],
+ [Infinity,13.62,2.433]
+];
+const EDAD_FACTOR={60:0.75,61:0.80,62:0.85,63:0.90,64:0.95,65:1.00};
+// supuestos Ley 97
+const R_REAL=0.03, RETIRO_RATE=0.04, APORTE_OBLIG=0.08;
+
+const fmt=new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',maximumFractionDigits:0});
+const peso=n=>fmt.format(Math.max(0,Math.round(n)));
+const onlyNum=s=>{const v=parseInt(String(s).replace(/[^\d]/g,''),10);return isNaN(v)?0:v;};
+
+// ---- cálculo Ley 73 ----
+function pension73(salarioMensual, semanas, edad, salarioDiarioOverride){
+  let salDiario = salarioDiarioOverride!=null ? salarioDiarioOverride : salarioMensual/30;
+  salDiario = Math.min(salDiario, TOPE_DIARIO);
+  const veces = salDiario/UMA;
+  let cuantia=13.62, incr=2.433;
+  for(const [lim,c,i] of TABLA){ if(veces<=lim){cuantia=c;incr=i;break;} }
+  const periodos = Math.max(0,(semanas-500)/52);
+  let pct = cuantia + incr*periodos;
+  if(pct>100) pct=100;
+  const salMensualTop = salDiario*30;
+  const calc = salMensualTop*pct/100*(EDAD_FACTOR[edad]||0.75)*1.11;
+  const aplicaPMG = calc<PMG;
+  const pension = aplicaPMG ? PMG : calc;
+  return {pension, calc, pct, aplicaPMG, salMensualTop};
+}
+
+// ---- cálculo Ley 97 ----
+function pension97(edad, retiro, salario, saldo, voluntario){
+  const anios = Math.max(0, retiro-edad);
+  const n = anios*12, rm = R_REAL/12;
+  const factorLump = Math.pow(1+R_REAL, anios);
+  const factorAnnuity = rm>0 ? (Math.pow(1+rm,n)-1)/rm : n;
+  function proyecta(aporteMensual){
+    const saldoFut = saldo*factorLump + aporteMensual*factorAnnuity;
+    const pensionMensual = saldoFut*RETIRO_RATE/12;
+    return {saldoFut, pensionMensual};
+  }
+  const oblig = salario*APORTE_OBLIG;
+  const sin = proyecta(oblig);
+  const con = proyecta(oblig+voluntario);
+  return {anios, sin, con, salario};
+}
+
+const app={
+  law:null, l73age:65,
+
+  toSelector(){ this.show('selector'); },
+  pickLaw(l){ this.law=l; if(l==='73'){this.show('ley73');this.render73();} else {this.show('ley97');this.render97();} },
+  show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});},
+
+  // ----- LEY 73 -----
+  render73(){
+    const sal=onlyNum(document.getElementById('l73-salario').value);
+    const sem=onlyNum(document.getElementById('l73-semanas').value);
+    const box=document.getElementById('l73-result');
+    if(sal<=0||sem<=0){
+      box.innerHTML='<div class="empty"><span class="big">👆</span>Llena tu salario y tus semanas para ver tu pensión estimada.</div>';return;
+    }
+    if(sem<500){
+      box.innerHTML='<div class="disclaimer" style="margin-top:6px"><b>Aún no alcanzas el mínimo.</b> Con Ley 73 necesitas al menos <b>500 semanas</b> cotizadas para tener derecho a pensión. Te faltan '+(500-sem)+' semanas. Puedes completarlas con Modalidad 40 o continuación voluntaria.</div>';return;
+    }
+    const r=pension73(sal,sem,this.l73age);
+    const ages=[60,61,62,63,64,65].map(a=>({a,p:pension73(sal,sem,a).pension}));
+    const maxAge=Math.max(...ages.map(x=>x.p));
+    const todasPMG=ages.every(x=>x.p===PMG);
+    const m40=pension73(sal,sem,this.l73age,TOPE_DIARIO);
+
+    let html='';
+    if(r.aplicaPMG){
+      html+='<div class="result"><div class="rlbl">Tu pensión estimada a los '+this.l73age+' años</div>'+
+        '<div class="rbig">'+peso(r.pension)+'<small> /mes</small></div>'+
+        '<div class="rsub">Tu cálculo da '+peso(r.calc)+', pero como es menor al mínimo, recibes la <b>Pensión Mínima Garantizada</b> — un piso que la ley te asegura.</div></div>';
+    } else {
+      html+='<div class="result"><div class="rlbl">Tu pensión estimada a los '+this.l73age+' años</div>'+
+        '<div class="rbig">'+peso(r.pension)+'<small> /mes</small></div>'+
+        '<div class="rsub">Equivale al '+Math.round(r.pension/sal*100)+'% de tu salario actual.</div></div>';
+    }
+
+    if(todasPMG){
+      html+='<div class="block fpb" style="text-align:left"><h4>🛡️ Estás en el piso garantizado</h4>'+
+        'A tu nivel de salario y semanas, recibes el mínimo garantizado de <b>'+peso(PMG)+'</b> sin importar la edad de retiro — hoy es el más alto de la historia. Para aspirar a una pensión <b>mayor</b>, tus dos palancas son: <b>cotizar más semanas</b> o usar <b>Modalidad 40</b>.</div>';
+    } else {
+      html+='<div class="compare"><h3>⏳ Lo que ganas por esperarte</h3><div class="agebar">'+
+        ages.map(x=>{const h=Math.round(x.p/maxAge*100);
+          return '<div class="agecol'+(x.a===65?' best':'')+'"><div class="amt">'+(x.p/1000).toFixed(1)+'k</div><div class="bar" style="height:'+h+'%"></div><div class="age">'+x.a+'</div></div>';}).join('')+
+        '</div></div>';
+    }
+
+    html+='<div class="block m40"><h4>💪 ¿Y si usas Modalidad 40?</h4>'+
+      'Es cotizar por tu cuenta tus últimos años con un salario más alto, para subir tu promedio. Si cotizaras al tope, tu pensión podría llegar a:'+
+      '<div class="m40row"><span class="lbl">Con Modalidad 40</span><span class="val">'+peso(m40.pension)+'/mes</span></div>'+
+      '<div style="font-size:12.5px;color:var(--soft);margin-top:9px;line-height:1.45">Ojo: la Modalidad 40 tiene un costo mensual que pagas tú y sube cada año. Aun así, para muchos el aumento de pensión lo compensa con creces. Vale la pena calcular tu caso con un asesor.</div></div>';
+
+    html+='<div class="assumptions">📊 <b>Cómo lo calculamos:</b> fórmula del Art. 167 de la Ley del Seguro Social 1973 (cuantía básica + incrementos por semanas, según tu grupo salarial) × factor por edad × factor de actualización 1.11. Salario topado a 25 UMAs. Piso: Pensión Mínima Garantizada de '+peso(PMG)+'/mes (2026). No incluye asignaciones por cónyuge o hijos (que pueden sumar 15% o más).</div>';
+    html+='<div class="disclaimer"><b>Es una estimación orientativa.</b> El monto oficial lo calcula el IMSS con tu constancia real de semanas y salarios; puede variar. Úsalo para planear, no como cifra definitiva.</div>';
+    html+='<div class="brand">Programa <span>VIVE</span> · Educación financiera</div>';
+    box.innerHTML=html;
+  },
+
+  // ----- LEY 97 -----
+  render97(){
+    const edad=onlyNum(document.getElementById('l97-edad').value);
+    const retiro=onlyNum(document.getElementById('l97-retiro').value);
+    const sal=onlyNum(document.getElementById('l97-salario').value);
+    const saldo=onlyNum(document.getElementById('l97-saldo').value);
+    const vol=onlyNum(document.getElementById('l97-voluntario').value);
+    const box=document.getElementById('l97-result');
+    if(edad<=0||sal<=0){
+      box.innerHTML='<div class="empty"><span class="big">👆</span>Llena tu edad y tu salario para estimar tu pensión.</div>';return;
+    }
+    if(retiro<=edad){
+      box.innerHTML='<div class="disclaimer" style="margin-top:6px">La edad de retiro debe ser mayor que tu edad actual. Con Ley 97 puedes pensionarte a partir de los 60-65 años.</div>';return;
+    }
+    const r=pension97(edad,retiro,sal,saldo,vol);
+    const tasaSin=Math.round(r.sin.pensionMensual/sal*100);
+    const tasaCon=Math.round(r.con.pensionMensual/sal*100);
+    const dif=r.con.pensionMensual-r.sin.pensionMensual;
+
+    let html='<div class="result"><div class="rlbl">Tu pensión estimada a los '+retiro+' años (pesos de hoy)</div>'+
+      '<div class="rbig">'+peso(r.con.pensionMensual)+'<small> /mes</small></div>'+
+      '<div class="rsub">Equivale al '+tasaCon+'% de tu salario actual · en '+r.anios+' años de ahorro</div></div>';
+
+    html+='<div class="pill-row">'+
+      '<div class="pill"><div class="pv">'+peso(r.sin.pensionMensual)+'</div><div class="pl">Solo con lo obligatorio</div></div>'+
+      '<div class="pill"><div class="pv">'+peso(r.con.pensionMensual)+'</div><div class="pl">Aportando '+peso(vol)+' extra</div></div>'+
+      '</div>';
+
+    if(vol>0 && dif>0){
+      html+='<div class="block vol"><h4>✨ El poder de tu aportación voluntaria</h4>'+
+        'Aportar <b>'+peso(vol)+' al mes</b> haría crecer tu pensión en <b>'+peso(dif)+' más cada mes</b>, de por vida. Empezar temprano es lo que más pesa: el tiempo hace el trabajo pesado.</div>';
+    }
+
+    html+='<div class="block ppr"><h4>🌱 Otra opción: un PPR</h4>'+
+      'Un <b>Plan Personal de Retiro</b> es ahorro para el retiro que además es <b>deducible de impuestos</b>. Sirve para complementar tu AFORE y llegar con más a tu retiro.</div>';
+
+    html+='<div class="block fpb"><h4>ℹ️ Un apunte</h4>'+
+      'Existe además el <b>Fondo de Pensiones para el Bienestar</b>, un complemento del gobierno para quienes se jubilan a los 65 años bajo Ley 97. Sus reglas y montos los define ese programa.</div>';
+
+    html+='<div class="assumptions">📊 <b>Supuestos:</b> rendimiento real de <b>3% anual</b> (ya descontada la inflación, por eso el resultado está en pesos de hoy), aportación obligatoria estimada del <b>8%</b> de tu salario, y una regla de retiro del <b>4% anual</b> del saldo. Cambiar estos supuestos cambia el resultado.</div>';
+    html+='<div class="disclaimer"><b>Es una estimación orientativa.</b> Tu pensión real dependerá de los rendimientos, las comisiones de tu AFORE, tus semanas cotizadas (mínimo 875 en 2026) y la modalidad que elijas. Úsalo para planear.</div>';
+    html+='<div class="brand">Programa <span>VIVE</span> · Educación financiera</div>';
+    box.innerHTML=html;
+  },
+};
+
+// wiring Ley 73
+['l73-salario','l73-semanas'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{
+    if(id==='l73-salario'){const v=onlyNum(el.value);el.value=v?v.toLocaleString('es-MX'):'';}
+    else {const v=onlyNum(el.value);el.value=v?v.toLocaleString('es-MX'):'';}
+    app.render73();
+  });
+});
+document.getElementById('l73-ages').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  app.l73age=+b.dataset.age;
+  document.querySelectorAll('#l73-ages button').forEach(x=>x.classList.toggle('on',x===b));
+  app.render73();
+});
+// wiring Ley 97
+['l97-edad','l97-retiro','l97-salario','l97-saldo','l97-voluntario'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{
+    if(id==='l97-salario'||id==='l97-saldo'||id==='l97-voluntario'){const v=onlyNum(el.value);el.value=v?v.toLocaleString('es-MX'):'';}
+    app.render97();
+  });
+});
+</script>
+</body>
+</html>
